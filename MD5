@@ -1,0 +1,17 @@
+fa76326f5389009e557450bf204d6543 *DESCRIPTION
+0e2c839dac0ba84f8905a36c8a48f66f *NAMESPACE
+b47ddfb2623fd198b6e02e7ed9422d6c *NEWS.md
+6ff61ce96b8a0aca5f241ef7aaab4a68 *R/compat-purrr.R
+d1c4f845ad09b132b9e331bfcf1a615e *R/files.R
+3ce3819ffa26d68170dc0bb542dd6e4d *R/find.R
+6edb85feae9047e0a6d194dab34de9ff *R/md.R
+003efed8a6e1fa51e906f63980aa646e *R/package.R
+807253ab1d3b56fff9c86f1bcc95e7a0 *R/rules.R
+70cadfd8d5d16787c5d1d530286ceb39 *R/transform.R
+b43b1058d5bb4ca6a6e32e16f8bdd48b *README.md
+256c3dd5fb75039828192d32775a5521 *inst/rstudio/addins.dcf
+2e6ea71a7396a37f1f55997b4adcf8ee *man/find_rd.Rd
+f9b2c6e571d6cf343fd30014e18cd4ee *man/markdownify.Rd
+e0583d9d1339dc6ecc0484902e59a176 *man/roxygen2md.Rd
+e127af8561ad06e8d687e8722a8d9040 *tests/testthat.R
+a6ed43055ac4978a4ad9b55947b1076f *tests/testthat/test-rules.R

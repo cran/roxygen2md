@@ -1,0 +1,9 @@
+Name: Find Rd
+Description: Find Rd code
+Binding: find_rd
+Interactive: true
+
+Name: Rd to Markdown
+Description: Replace Rd syntax with Markdown in roxygen blocks
+Binding: roxygen2md
+Interactive: false
