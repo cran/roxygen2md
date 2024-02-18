@@ -19,11 +19,14 @@
 #' text
 #' markdownify(text)
 #'
-markdownify <- function(text, scope = c("full", "simple", "none")) {
+markdownify <- function(text, scope = c("full", "simple", "unlink", "indent", "none")) {
   scope <- match.arg(scope)
 
   #' @description
+  #' The `scope` argument controls the depth of the transformation.
+  #'
   #' With `scope = "none"`, no transformations are carried out.
+  #' The only effect is that Markdown is enabled for this package.
   #'
   #' With `scope = "simple"`, the following elements are converted:
   simple_transformers <- c(
@@ -68,10 +71,32 @@ markdownify <- function(text, scope = c("full", "simple", "none")) {
     NULL
   )
 
+  #'
+  #' With `scope = "unlink"`, _only_ the following elements are translated:
+  unlink_transformers <- c(
+    #'
+    #' - `\\link{...}` to `...`
+    remove_link,
+    NULL
+  )
+
+  #'
+  #' With `scope = "indent"`, `@param` and `@return` tags spanning multiple lines
+  #' are indented with two spaces.
+  #'
+  indent_transformers <- c(
+    indent_param_return,
+    NULL
+  )
+
   if (scope == "full") {
     transformers <- c(full_transformers, simple_transformers)
   } else if (scope == "simple") {
     transformers <- c(simple_transformers)
+  } else if (scope == "unlink") {
+    transformers <- c(unlink_transformers)
+  } else if (scope == "indent") {
+    transformers <- c(indent_transformers)
   } else {
     transformers <- list()
   }
@@ -359,4 +384,69 @@ convert_url <- function(text) {
     ),
     "<\\1>"
   )
+}
+
+remove_link <- function(text) {
+  re_substitutes(
+    global = TRUE,
+    text,
+    rex(
+      "\\link{",
+      capture(one_or_more(none_of("}"))),
+      "}"
+    ),
+    "\\1"
+  )
+}
+
+indent_param_return <- function(text) {
+  for (i in 1:100) {
+    new_text <- re_substitutes(
+      global = TRUE,
+      text,
+      rex(
+        capture(
+          any_blanks,
+          one_or_more("#"),
+          "'",
+          any_blanks,
+          "@",
+          or("param", "return"),
+          or(
+            group(" ", zero_or_more(any)),
+            ""
+          ),
+          newline,
+          zero_or_more(
+            any_blanks,
+            one_or_more("#"),
+            "'",
+            or(
+              group(
+                "   ",
+                none_of("@"),
+                zero_or_more(any)
+              ),
+              ""
+            ),
+            newline
+          ),
+          any_blanks,
+          one_or_more("#"),
+          "' "
+        ),
+        capture(none_of("@", " "))
+      ),
+      "\\1  \\2"
+    )
+
+    if (new_text == text) {
+      return(text)
+    }
+
+    text <- new_text
+  }
+
+  # Should never be reached
+  return(text)
 }

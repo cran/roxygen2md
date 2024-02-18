@@ -11,10 +11,7 @@ transform_files <- function(files, scope) {
     new_text
   }
 
-  changed <- enc::transform_lines_enc(files, transformer)
-  n_changed <- sum(changed, na.rm = TRUE)
-
-  ui_done("{ui_value(n_changed)} source files changed")
+  changed <- transform_lines(files, transformer)
 
   if (is_roxygen_field_markdown()) {
     ui_info("Running {ui_code('devtools::document()')}")
@@ -38,7 +35,7 @@ get_roxy_lines <- function(text) {
     rex(
       start,
       any_blanks,
-      some_of("#"),
+      one_or_more("#"),
       "'"
     )
   )

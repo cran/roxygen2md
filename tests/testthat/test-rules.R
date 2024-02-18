@@ -1,10 +1,10 @@
-expect_convert <- function(expr, output) {
-  quo <- rlang::enquo(expr)
-  expect_equal(force(expr), output)
+expect_convert <- function(expr, output, final_output = output) {
+  quo <- enquo(expr)
+  expect_equal(force(expr), !!output)
 
-  quo_name <- rlang::as_name(rlang::quo_get_expr(quo)[[1]])
-  markdownify_override <- rlang::list2(!!quo_name := markdownify)
-  expect_equal(rlang::eval_tidy(quo, data = markdownify_override), output)
+  quo_name <- as_name(quo_get_expr(quo)[[1]])
+  markdownify_override <- list2(!!quo_name := markdownify)
+  expect_equal(eval_tidy(quo, data = markdownify_override), !!final_output)
 }
 
 test_that("convert_local_links", {
@@ -86,4 +86,16 @@ test_that("convert_href", {
 
 test_that("convert_url", {
   expect_convert(convert_url("\\url{x}"), "<x>")
+})
+
+test_that("remove_link", {
+  expect_convert(remove_link("\\link{x}"), "x", "[x]")
+
+  # This conversion is bad, use `scope = "unlink"` to detect
+  expect_convert(remove_link("\\code{...\\link{x}...}"), "\\code{...x...}", "`...[x]...`")
+})
+
+test_that("indent_param_return", {
+  expect_equal(indent_param_return("#' @param a b\n#' c"), "#' @param a b\n#'   c")
+  expect_equal(indent_param_return("#' @return a b\n#' c\n#' d"), "#' @return a b\n#'   c\n#'   d")
 })
